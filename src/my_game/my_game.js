@@ -94,43 +94,75 @@ class MyGame extends engine.Scene {
     // The Update function, updates the application state. Make sure to _NOT_ draw
     // anything from this function!
     update () {
-        let msg = "Status: " + this.mLineSet.length + " ";
-        let echo = "";
+        let msg = "Status: DyePacks() Patrols() AutoSpawn()";
         let x, y;
 
-
+        //Hero inputs
         if(engine.input.isButtonPressed(engine.input.eMouseButton.eLeft)){
             x = this.mCamera.mouseWCX();
             y = this.mCamera.mouseWCY();
-            this.mHero.getXform().setPosition(x,y);
+            this.mHero.getXform().setPosition(x,y); 
         }
         
-        
+        if(engine.input.isKeyClicked(engine.input.keys.Space)){
+            //Spawn dyepack at hero location
+        }
+
+        if(engine.input.isKeyClicked(engine.input.keys.Q)){
+            //Triggers a hero hit event
+        }
+
+        //DyePack inputs
+
+        if(engine.input.isKeyPressed(engine.input.keys.D)){
+            //Triggers a slow down 
+        }
+
+        if(engine.input.isKeyClicked(engine.input.keys.S)){
+            //Triggers a hit event for all dyepacks
+        }
+
+        //Patrol inputs
+
+        if(engine.input.isKeyClicked(engine.input.keys.P)){
+            //Toggles auto spawning on/off
+        }
+
+        if(engine.input.isKeyClicked(engine.input.keys.C)){
+            //Spawns new patrol 
+        }
+
+        if(engine.input.isKeyClicked(engine.input.keys.J)){
+            //Triggers hit even for all patrols
+        }
+
+        //7.6 DEFAULT CODE
+
         // show line or point
-        if  (engine.input.isKeyClicked(engine.input.keys.P)) {
-            this.mShowLine = !this.mShowLine;
-            let line = null;
-            if (this.mCurrentLine !== null)
-                line = this.mCurrentLine;
-            else {
-                if (this.mLineSet.length > 0)
-                    line = this.mLineSet[this.mLineSet.length-1];
-            }
-            if (line !== null)
-                line.setShowLine(this.mShowLine);
-        }
+        // if  (engine.input.isKeyClicked(engine.input.keys.P)) {
+        //     this.mShowLine = !this.mShowLine;
+        //     let line = null;
+        //     if (this.mCurrentLine !== null)
+        //         line = this.mCurrentLine;
+        //     else {
+        //         if (this.mLineSet.length > 0)
+        //             line = this.mLineSet[this.mLineSet.length-1];
+        //     }
+        //     if (line !== null)
+        //         line.setShowLine(this.mShowLine);
+        // }
     
-        if (engine.input.isButtonPressed(engine.input.eMouseButton.eMiddle)) {
-            let len = this.mLineSet.length;
-            if (len > 0) {
-                this.mCurrentLine = this.mLineSet[len - 1];
-                x = this.mCamera.mouseWCX();
-                y = this.mCamera.mouseWCY();
-                echo += "Selected " + len + " ";
-                echo += "[" + x.toPrecision(2) + " " + y.toPrecision(2) + "]";
-                this.mCurrentLine.setFirstVertex(x, y);
-            }
-        }
+        // if (engine.input.isButtonPressed(engine.input.eMouseButton.eMiddle)) {
+        //     let len = this.mLineSet.length;
+        //     if (len > 0) {
+        //         this.mCurrentLine = this.mLineSet[len - 1];
+        //         x = this.mCamera.mouseWCX();
+        //         y = this.mCamera.mouseWCY();
+        //         echo += "Selected " + len + " ";
+        //         echo += "[" + x.toPrecision(2) + " " + y.toPrecision(2) + "]";
+        //         this.mCurrentLine.setFirstVertex(x, y);
+        //     }
+        // }
     
         // if (engine.input.isButtonPressed(engine.input.eMouseButton.eLeft)) {
         //     x = this.mCamera.mouseWCX();
@@ -151,9 +183,7 @@ class MyGame extends engine.Scene {
         //     this.mCurrentLine = null;
         //     this.mP1 = null;
         // }
-    
-        msg += echo;
-        msg += " Show:" + (this.mShowLine ? "Ln" : "Pt");
+        
         this.mMsg.setText(msg);
     }
 }
