@@ -5,7 +5,7 @@ import engine from "../engine/index.js";
 import Hero from "./objects/hero.js";
 import Minion from "./objects/minion.js";
 import Brain from "./objects/brain.js";
-//import DyePack from "./objects/dye_pack";
+import DyePack from "./objects/dye_pack.js";
 
 class MyGame extends engine.Scene {
     constructor() {
@@ -55,7 +55,7 @@ class MyGame extends engine.Scene {
         this.mHero = new Hero(this.kMinionSprite);
         this.mBrain = new Brain(this.kMinionSprite);
         this.mMinion = new Minion(this.kMinionSprite, 30, 30);
-        //this.mDyePack = new DyePack(this.kMinionSprite);
+        this.mDyePack = new DyePack(this.kMinionSprite);
 
 
         this.mHero.getXform().setSize(9,12);
@@ -85,7 +85,7 @@ class MyGame extends engine.Scene {
         
         this.mHero.draw(this.mCamera);
         this.mMinion.draw(this.mCamera);
-        // this.mDyePack.draw(this.mCamera);
+        this.mDyePack.draw(this.mCamera);
         this.mBrain.draw(this.mCamera);
         this.mMsg.draw(this.mCamera);   // only draw status in the main camera
         

@@ -13,6 +13,7 @@ class DyePack extends engine.GameObject {
         this.mRenderComponent.setColor([1, 1, 1, 0.1]);
         this.mRenderComponent.getXform().setPosition(50, 33);
         this.mRenderComponent.getXform().setSize(this.kRefWidth / 50, this.kRefHeight / 50);
+        this.mRenderComponent.getXform().setRotationInDegree(90);
         this.mRenderComponent.setElementPixelPositions(510, 595, 23, 153);
     }
 
