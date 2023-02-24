@@ -192,5 +192,5 @@ export {
     isKeyClicked, isKeyPressed,
 
     // mouse
-    isButtonClicked, isButtonPressed, getMousePosX, getMousePosY
+    isButtonClicked, isButtonPressed, getMousePosX, getMousePosY, onMouseMove
 }
