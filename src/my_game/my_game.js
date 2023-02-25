@@ -160,14 +160,20 @@ class MyGame extends engine.Scene {
 
         if (engine.input.isKeyClicked(engine.input.keys.P)) {
             //Toggles auto spawning on/off
+            if(this.autospawn){
+                this.autospawn = false;
+            }else{
+                this.autospawn = true;
+            }
         }
 
         if (engine.input.isKeyClicked(engine.input.keys.C)) {
-            //Spawns new patrol 
+            //Spawns new patrol
         }
 
         if (engine.input.isKeyClicked(engine.input.keys.J)) {
             //Triggers hit even for all patrols
+            
         }
 
         this.mMsg.setText(msg);

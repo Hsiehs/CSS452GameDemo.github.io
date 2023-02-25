@@ -11,8 +11,8 @@ class Brain extends engine.GameObject {
         this.mRenderComponent =  new engine.SpriteRenderable(spriteTexture);
         this.mRenderComponent.setColor([1, 1, 1, 0]);
         this.mRenderComponent.getXform().setPosition(50, 10);
-        this.mRenderComponent.getXform().setSize(3, 5.4);
-        this.mRenderComponent.setElementPixelPositions(600, 700, 0, 180);
+        this.mRenderComponent.getXform().setSize(7.5, 7.5);
+        this.mRenderComponent.setElementPixelPositions(120, 300, 0, 180);
 
         this.setSpeed(0.3);
     }
