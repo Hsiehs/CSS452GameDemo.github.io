@@ -19,6 +19,8 @@ class MyGame extends engine.Scene {
 
         this.mActiveDyePacks = [];
 
+        this.mActivePatrols = [];
+
         this.autospawn = false;
 
 
@@ -81,28 +83,34 @@ class MyGame extends engine.Scene {
         engine.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
         this.mCamera.setViewAndCameraMatrix();
 
-        let i, l;
-
         this.mBg.draw(this.mCamera);
-
         this.mHero.draw(this.mCamera);
         this.mMinion.draw(this.mCamera);
         this.mBrain.draw(this.mCamera);
-        for (let j = 0; j < this.mActiveDyePacks.length; j++) {
-            this.mActiveDyePacks[j].draw(this.mCamera);
-        }
         this.mMsg.draw(this.mCamera);   // only draw status in the main camera
+        
+        // update all of the dye packs that are alive
+        for (let j = 0; j < this.mActiveDyePacks.length; j++) 
+            this.mActiveDyePacks[j].draw(this.mCamera);
+        
+
+        // update all of the patrols that are alive
+        for (let k = 0; k < this.mActivePatrols.length; k++)
+            this.mActivePatrols[k].draw(this.Camera);
+
 
     }
 
     // The Update function, updates the application state. Make sure to _NOT_ draw
     // anything from this function!
     update() {
-        let msg = "Status: DyePacks(" + this.mActiveDyePacks.length + ") Patrols() AutoSpawn(" + this.autospawn + ")";
-        let x, y;
+        // status update
+        let msg = "Status: DyePacks(" + this.mActiveDyePacks.length + ") Patrols(" + this.mActivePatrols.length + ") AutoSpawn(" + this.autospawn + ")";
 
-        //Call object updates.
+        // call object updates
+        // HERO
         this.mHero.update();
+        // DYE PACKS
         for (let k = 0; k < this.mActiveDyePacks.length; k++) {
             if (this.mActiveDyePacks[k].hasNoLife() || this.mActiveDyePacks[k].isMotionless() || this.mActiveDyePacks[k].isOutOfBounds(this.mCamera)) {
                 this.mActiveDyePacks.splice(k, 1);
@@ -110,6 +118,8 @@ class MyGame extends engine.Scene {
                 this.mActiveDyePacks[k].update();
             }
         }
+        // PATROL GROUPS
+        
 
         //Hero position based on mouse if it is in the viewport
         if (this.mCamera.isMouseInViewport) {
@@ -117,6 +127,7 @@ class MyGame extends engine.Scene {
             let x = this.mCamera.mouseWCX();
             let y = this.mCamera.mouseWCY();
 
+            // Check Up-Down-Left-Right
             // Check if the mouse is out of bounds on the top side
             if (y > this.mCamera.getWCHeight() - this.mHero.collider.mHeight/2) {
                 // Set the final interpolation value to the top edge of the camera view minus half the height of the hero
@@ -131,16 +142,16 @@ class MyGame extends engine.Scene {
             else {
                 this.heroLerpY.setFinal(y);
             }
-
-            // Check if the mouse is out of bounds on the right side
-            if (x > this.mCamera.getWCWidth() - this.mHero.collider.mWidth/2) {
-                // Set the final interpolation value to the right edge of the camera view minus half the width of the hero
-                this.heroLerpX.setFinal(this.mCamera.getWCWidth() - this.mHero.collider.mWidth/2);
-            }
+            
             // Check if the mouse is out of bounds on the left side
-            else if (x < this.mHero.collider.mWidth/2) {
+            if (x < this.mHero.collider.mWidth/2) {
                 // Set the final interpolation value to half the width of the hero
                 this.heroLerpX.setFinal(this.mHero.collider.mWidth/2);
+            }
+            // Check if the mouse is out of bounds on the right side
+            else if (x > this.mCamera.getWCWidth() - this.mHero.collider.mWidth/2) {
+                // Set the final interpolation value to the right edge of the camera view minus half the width of the hero
+                this.heroLerpX.setFinal(this.mCamera.getWCWidth() - this.mHero.collider.mWidth/2);
             }
             // The mouse is within the bounds, set the final interpolation value to the x-coordinate of the mouse
             else {
