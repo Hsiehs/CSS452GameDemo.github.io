@@ -6,6 +6,7 @@ class Hero extends engine.GameObject {
     constructor(spriteTexture) {
         super(null);
         this.kDelta = 0.3;
+        this.collider = null;
 
         this.mRenderComponent = new engine.SpriteRenderable(spriteTexture);
         this.mRenderComponent.setColor([1, 1, 1, 0]);
@@ -15,6 +16,7 @@ class Hero extends engine.GameObject {
     }
 
     update() {
+        this.collider =   this.getBBox();
         this.mRenderComponent.getXform().setSize(9, 12);
     }
 

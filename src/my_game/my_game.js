@@ -6,6 +6,7 @@ import Hero from "./objects/hero.js";
 import Minion from "./objects/minion.js";
 import Brain from "./objects/brain.js";
 import DyePack from "./objects/dye_pack.js";
+import Lerp from "../engine/utils/lerp.js";
 
 class MyGame extends engine.Scene {
     constructor() {
@@ -63,9 +64,14 @@ class MyGame extends engine.Scene {
         this.mMsg.setColor([1, 1, 1, 1]);
         this.mMsg.getXform().setPosition(2, 3);
         this.mMsg.setTextHeight(3);
-
+        
+        // bouncing/oscellation of hero and dyepack
         this.mHeroBounce = new engine.Oscillate(4.5, 4, 60);
         this.mDyePackBounce = new engine.Oscillate(4, 20, 300);
+
+        // hero position interpolation
+        this.heroLerpX = new Lerp(this.mHero.getXform().getXPos(), 120, 0.05);
+        this.heroLerpY = new Lerp(this.mHero.getXform().getYPos(), 120, 0.05);
     }
 
     // This is the draw function, make sure to setup proper drawing environment, and more
@@ -96,9 +102,7 @@ class MyGame extends engine.Scene {
         let x, y;
 
         //Call object updates.
-
         this.mHero.update();
-
         for (let k = 0; k < this.mActiveDyePacks.length; k++) {
             if (this.mActiveDyePacks[k].hasNoLife() || this.mActiveDyePacks[k].isMotionless() || this.mActiveDyePacks[k].isOutOfBounds(this.mCamera)) {
                 this.mActiveDyePacks.splice(k, 1);
@@ -107,12 +111,56 @@ class MyGame extends engine.Scene {
             }
         }
 
-
-        //Hero inputs
-        if (engine.input.isButtonPressed(engine.input.eMouseButton.eLeft)) {
+        //Hero inputs simple
+        /**if (engine.input.isButtonPressed(engine.input.eMouseButton.eLeft)) {
             x = this.mCamera.mouseWCX();
             y = this.mCamera.mouseWCY();
             this.mHero.getXform().setPosition(x, y);
+        }*/
+
+        //Hero position based on mouse if it is in the viewport
+        if (this.mCamera.isMouseInViewport) {
+            // Get the world-coordinates of the mouse
+            let x = this.mCamera.mouseWCX();
+            let y = this.mCamera.mouseWCY();
+
+            // Check if the mouse is out of bounds on the right side
+            if (x > this.mCamera.getWCWidth() - this.mHero.collider.mWidth/2) {
+                // Set the final interpolation value to the right edge of the camera view minus half the width of the hero
+                this.heroLerpX.setFinal(this.mCamera.getWCWidth() - this.mHero.collider.mWidth/2);
+            }
+            // Check if the mouse is out of bounds on the left side
+            else if (x < this.mHero.collider.mWidth/2) {
+                // Set the final interpolation value to half the width of the hero
+                this.heroLerpX.setFinal(this.mHero.collider.mWidth/2);
+            }
+            // The mouse is within the bounds, set the final interpolation value to the x-coordinate of the mouse
+            else {
+                this.heroLerpX.setFinal(x);
+            }
+
+            // Check if the mouse is out of bounds on the top side
+            if (y > this.mCamera.getWCHeight() - this.mHero.collider.mHeight/2) {
+                // Set the final interpolation value to the top edge of the camera view minus half the height of the hero
+                this.heroLerpY.setFinal(this.mCamera.getWCHeight() - this.mHero.collider.mHeight/2);
+            }
+            // Check if the mouse is out of bounds on the bottom side
+            else if (y < this.mHero.collider.mHeight/2) {
+                // Set the final interpolation value to half the height of the hero
+                this.heroLerpY.setFinal(this.mHero.collider.mHeight/2);
+            }
+            // The mouse is within the bounds, set the final interpolation value to the y-coordinate of the mouse
+            else {
+                this.heroLerpY.setFinal(y);
+            }
+
+            // Update the interpolation values
+            this.heroLerpX.update();
+            this.heroLerpY.update();
+
+            // Set the position of the hero based on the interpolated values
+            this.mHero.getXform().setXPos(this.heroLerpX.get());
+            this.mHero.getXform().setYPos(this.heroLerpY.get());
         }
 
         if (engine.input.isKeyClicked(engine.input.keys.Space)) {
@@ -133,7 +181,6 @@ class MyGame extends engine.Scene {
         }
 
         //DyePack inputs
-
         if (engine.input.isKeyPressed(engine.input.keys.D)) {
             //Triggers a slow down
             for (let i = 0; i < this.mActiveDyePacks.length; i++) {
