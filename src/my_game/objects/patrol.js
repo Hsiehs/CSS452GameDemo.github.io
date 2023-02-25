@@ -46,10 +46,16 @@ class Patrol extends engine.GameObject {
             return false;
         }
     }
-
+    hit(){
+        this.head.isHit();
+        this.wing1.isHit();
+        this.wing2.isHit();
+    }
     // checks if patrol is inside bounds of the viewport except the right side
     keepPatrolOnscreen() {
-        
+        //let xPos = this.getXform().getXPos();
+        //let yPos = this.getXform().getYPos();
+
     }
 }
 

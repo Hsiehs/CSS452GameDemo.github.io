@@ -231,14 +231,15 @@ class MyGame extends engine.Scene {
         else if (this.autospawn && this.mAutoSpawnTimer < 0) {
             this.spawnHelper();
             this.mAutoSpawnTimer = (Math.random() * (3 - 2) + 2) * 60;
-            console.log(this.mAutoSpawnTimer);
         }else if(this.autospawn){
             this.mAutoSpawnTimer--;
         }
 
         if (engine.input.isKeyClicked(engine.input.keys.J)) {
             //Triggers hit even for all patrols
-
+            for(let i = 0; i < this.mActivePatrols.length; i++){
+                this.mActivePatrols[i].hit();
+            }
         }
 
         // PATROL HIT LOGIC, BOILERPLATE OCCELATE PACK ON HIT
