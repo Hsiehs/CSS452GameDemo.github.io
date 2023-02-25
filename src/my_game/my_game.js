@@ -150,7 +150,6 @@ class MyGame extends engine.Scene {
         }
         if (!this.mDyePackBounce.done()) {
             let d = this.mDyePackBounce.getNext();
-            console.log("test");
             for (let i = 0; i < this.mActiveDyePacks.length; i++) {
                 this.mActiveDyePacks[i].pauseForOscillation();
                 this.mActiveDyePacks[i].getXform().incXPosBy(d);
