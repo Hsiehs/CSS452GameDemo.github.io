@@ -17,8 +17,8 @@ class Patrol extends engine.GameObject {
         // head
         this.head = new Head(headTexture, [headX, headY]);
         // wings
-        this.wing1 = new TopWing(wingTexture, [headX + 10, headY + 6]);
-        this.wing2 = new BottomWing(wingTexture, [headX + 10, headY - 6]);
+        this.wing1 = new TopWing(wingTexture, [headX + 10, headY + 6], this.head);
+        this.wing2 = new BottomWing(wingTexture, [headX + 10, headY - 6], this.head);
     }
 
     draw(camera) {
@@ -40,15 +40,11 @@ class Patrol extends engine.GameObject {
 
     // check if outside bounds on right bound and alpha val of wing < 0
     isDead() {
-        // if (this.wing1.getColor()[3] >= 1 || this.wing2.getColor()[3] >= 1) {
-        //     return true;
-        // }
-
-        if (this.head.getXform().getXPos() + 3.75 > 200) {
+        if (this.wing1.getColor() >= 1 || this.wing2.getColor() >= 1 || this.head.getXform().getXPos() + 3.75 > 200) {
             return true;
+        }else{
+            return false;
         }
-
-        return false;
     }
 
     // checks if patrol is inside bounds of the viewport except the right side
