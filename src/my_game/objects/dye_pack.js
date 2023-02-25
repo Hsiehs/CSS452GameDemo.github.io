@@ -19,13 +19,11 @@ class DyePack extends engine.GameObject {
         this.mRenderComponent.getXform().setRotationInDegree(90);
         this.mRenderComponent.setElementPixelPositions(510, 595, 23, 153);
         
-        this.mBounce = new engine.Oscillate(4, 20, 300);
     }
 
     update() {
         this.lifespan--;
         this.mRenderComponent.getXform().incXPosBy(this.kSpeed);
-
     }
 
     hasNoLife(){ 
@@ -48,13 +46,12 @@ class DyePack extends engine.GameObject {
     }
 
     pauseForOscillation(){
-        this.kSpeed = 0.1;
+        this.kSpeed = 0;
     }
 
     setLifeSpan(time){
         this.lifespan = time;
     }
-
 
 }
 

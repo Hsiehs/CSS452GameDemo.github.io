@@ -65,7 +65,7 @@ class MyGame extends engine.Scene {
         this.mMsg.setTextHeight(3);
 
         this.mHeroBounce = new engine.Oscillate(4.5, 4, 60);
-        this.mDyePackBounce = new engine.Oscillate(3, 20, 300);
+        this.mDyePackBounce = new engine.Oscillate(4, 20, 300);
     }
 
     // This is the draw function, make sure to setup proper drawing environment, and more
@@ -150,14 +150,13 @@ class MyGame extends engine.Scene {
         }
         if (!this.mDyePackBounce.done()) {
             let d = this.mDyePackBounce.getNext();
+            console.log("test");
             for (let i = 0; i < this.mActiveDyePacks.length; i++) {
                 this.mActiveDyePacks[i].pauseForOscillation();
                 this.mActiveDyePacks[i].getXform().incXPosBy(d);
             }
         }
 
-
-    
         //Patrol inputs
 
         if (engine.input.isKeyClicked(engine.input.keys.P)) {
