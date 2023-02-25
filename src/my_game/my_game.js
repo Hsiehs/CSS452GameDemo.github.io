@@ -229,7 +229,7 @@ class MyGame extends engine.Scene {
             
         }
 
-        // PATROL HIT LOGIC
+        // PATROL HIT LOGIC, BOILERPLATE OCCELATE PACK ON HIT
 
         this.mMsg.setText(msg);
     }
