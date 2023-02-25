@@ -22,6 +22,8 @@ class MyGame extends engine.Scene {
 
         this.mShowLine = true;
 
+        this.autospawn = false;
+
         this.kBg = "assets/bg.png";
         this.kHero = "assets/favicon.png"; 
         this.kMinionSprite = "assets/SpriteSheet.png"
@@ -42,15 +44,15 @@ class MyGame extends engine.Scene {
         // Step A: set up the cameras
         this.mCamera = new engine.Camera(
             vec2.fromValues(30, 27.5), // position of the camera
-            100,                       // width of camera
+            200,                       // width of camera
             [0, 0, 800, 600]           // viewport (orgX, orgY, width, height)
         );
         this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
                 // sets the background to gray
         
         this.mBg = new engine.TextureRenderable(this.kBg);
-        this.mBg.getXform().setSize(100,80);
-        this.mBg.getXform().setPosition(30,30);
+        this.mBg.getXform().setSize(200,150);
+        this.mBg.getXform().setPosition(30,25);
 
         this.mHero = new Hero(this.kMinionSprite);
         this.mBrain = new Brain(this.kMinionSprite);
@@ -62,9 +64,11 @@ class MyGame extends engine.Scene {
         this.mHero.getXform().setPosition(50,40);
         
         this.mMsg = new engine.FontRenderable("Status Message");
-        this.mMsg.setColor([0, 0, 0, 1]);
-        this.mMsg.getXform().setPosition(-19, -8);
+        this.mMsg.setColor([1, 1, 1, 1]);
+        this.mMsg.getXform().setPosition(-68, -45);
         this.mMsg.setTextHeight(3);
+
+        this.mBounce = new engine.Oscillate(4.5, 4, 60);
     }
     
     // This is the draw function, make sure to setup proper drawing environment, and more
@@ -94,8 +98,10 @@ class MyGame extends engine.Scene {
     // The Update function, updates the application state. Make sure to _NOT_ draw
     // anything from this function!
     update () {
-        let msg = "Status: DyePacks() Patrols() AutoSpawn()";
+        let msg = "Status: DyePacks() Patrols() AutoSpawn(" + this.autospawn + ")";
         let x, y;
+
+        this.mHero.update();
 
         //Hero inputs
         if(engine.input.isButtonPressed(engine.input.eMouseButton.eLeft)){
@@ -108,8 +114,14 @@ class MyGame extends engine.Scene {
             //Spawn dyepack at hero location
         }
 
+        //implement spam protection (make sure hero resets to original position)
         if(engine.input.isKeyClicked(engine.input.keys.Q)){
             //Triggers a hero hit event
+            this.mBounce.reStart();
+        }
+        if(!this.mBounce.done()){
+            let d = this.mBounce.getNext();
+            this.mHero.getXform().incXPosBy(d);
         }
 
         //DyePack inputs
