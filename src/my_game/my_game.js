@@ -4,6 +4,7 @@ import engine from "../engine/index.js";
 
 import Hero from "./objects/hero.js";
 import DyePack from "./objects/dye_pack.js";
+import Patrol from "./objects/patrol.js";
 import Lerp from "../engine/utils/lerp.js";
 
 class MyGame extends engine.Scene {
@@ -56,7 +57,7 @@ class MyGame extends engine.Scene {
         this.mMsg.setColor([1, 1, 1, 1]);
         this.mMsg.getXform().setPosition(2, 3);
         this.mMsg.setTextHeight(3);
-        
+
         // bouncing/oscellation of hero and dyepack
         this.mHeroBounce = new engine.Oscillate(0.5, 6, 60);
         this.mDyePackBounce = new engine.Oscillate(4, 20, 300);
@@ -76,14 +77,16 @@ class MyGame extends engine.Scene {
         this.mBg.draw(this.mCamera);
         this.mHero.draw(this.mCamera);
         this.mMsg.draw(this.mCamera);   // only draw status in the main camera
-        
+
         // draw all of the dye packs that are alive
-        for (let j = 0; j < this.mActiveDyePacks.length; j++) 
-            this.mActiveDyePacks[j].draw(this.mCamera);  
+        for (let j = 0; j < this.mActiveDyePacks.length; j++)
+            this.mActiveDyePacks[j].draw(this.mCamera);
 
         // draw all of the patrols that are alive
-        for (let k = 0; k < this.mActivePatrols.length; k++)
-            this.mActivePatrols[k].draw(this.Camera);
+        for (let k = 0; k < this.mActivePatrols.length; k++){
+            this.mActivePatrols[k].draw(this.mCamera);
+        }
+            
 
     }
 
@@ -107,10 +110,13 @@ class MyGame extends engine.Scene {
         }
         // patrol
         for (let l = 0; l < this.mActivePatrols.length; l++) {
-            // death conditions
-            // or update
-        }  
-        
+            if (this.mActivePatrols[l].isDead()) {
+                this.mActivePatrols.splice(l, 1);
+            } else {
+                this.mActivePatrols[l].update();
+            }
+        }
+
         // Hero Related Methods
         // -------------------------------------------------------------------
 
@@ -122,29 +128,29 @@ class MyGame extends engine.Scene {
 
             // Check Up-Down-Left-Right
             // Check if the mouse is out of bounds on the top side
-            if (y > this.mCamera.getWCHeight() - this.mHero.collider.mHeight/2) {
+            if (y > this.mCamera.getWCHeight() - this.mHero.collider.mHeight / 2) {
                 // Set the final interpolation value to the top edge of the camera view minus half the height of the hero
-                this.heroLerpY.setFinal(this.mCamera.getWCHeight() - this.mHero.collider.mHeight/2);
+                this.heroLerpY.setFinal(this.mCamera.getWCHeight() - this.mHero.collider.mHeight / 2);
             }
             // Check if the mouse is out of bounds on the bottom side
-            else if (y < this.mHero.collider.mHeight/2) {
+            else if (y < this.mHero.collider.mHeight / 2) {
                 // Set the final interpolation value to half the height of the hero
-                this.heroLerpY.setFinal(this.mHero.collider.mHeight/2);
+                this.heroLerpY.setFinal(this.mHero.collider.mHeight / 2);
             }
             // The mouse is within the bounds, set the final interpolation value to the y-coordinate of the mouse
             else {
                 this.heroLerpY.setFinal(y);
             }
-            
+
             // Check if the mouse is out of bounds on the left side
-            if (x < this.mHero.collider.mWidth/2) {
+            if (x < this.mHero.collider.mWidth / 2) {
                 // Set the final interpolation value to half the width of the hero
-                this.heroLerpX.setFinal(this.mHero.collider.mWidth/2);
+                this.heroLerpX.setFinal(this.mHero.collider.mWidth / 2);
             }
             // Check if the mouse is out of bounds on the right side
-            else if (x > this.mCamera.getWCWidth() - this.mHero.collider.mWidth/2) {
+            else if (x > this.mCamera.getWCWidth() - this.mHero.collider.mWidth / 2) {
                 // Set the final interpolation value to the right edge of the camera view minus half the width of the hero
-                this.heroLerpX.setFinal(this.mCamera.getWCWidth() - this.mHero.collider.mWidth/2);
+                this.heroLerpX.setFinal(this.mCamera.getWCWidth() - this.mHero.collider.mWidth / 2);
             }
             // The mouse is within the bounds, set the final interpolation value to the x-coordinate of the mouse
             else {
@@ -191,7 +197,7 @@ class MyGame extends engine.Scene {
         if (engine.input.isKeyClicked(engine.input.keys.S)) {
             //Triggers a hit event for all dyepacks
             this.mDyePackBounce.reStart();
-            for(let i = 0; i < this.mActiveDyePacks.length; i++){
+            for (let i = 0; i < this.mActiveDyePacks.length; i++) {
                 this.mActiveDyePacks[i].setLifeSpan(300);
             }
         }
@@ -205,12 +211,12 @@ class MyGame extends engine.Scene {
 
         // Patrol Related Methods
         // -------------------------------------------------------------------
-        
+
         if (engine.input.isKeyClicked(engine.input.keys.P)) {
             //Toggles auto spawning on/off
-            if(this.autospawn){
+            if (this.autospawn) {
                 this.autospawn = false;
-            }else{
+            } else {
                 this.autospawn = true;
             }
         }
@@ -218,7 +224,7 @@ class MyGame extends engine.Scene {
         if (engine.input.isKeyClicked(engine.input.keys.C)) {
             //Spawns new patrol
             this.spawnHelper();
-        } 
+        }
         // spawn if autospawn on
         else if (this.autospawn) {
             this.spawnHelper();
@@ -226,7 +232,7 @@ class MyGame extends engine.Scene {
 
         if (engine.input.isKeyClicked(engine.input.keys.J)) {
             //Triggers hit even for all patrols
-            
+
         }
 
         // PATROL HIT LOGIC, BOILERPLATE OCCELATE PACK ON HIT
@@ -236,7 +242,8 @@ class MyGame extends engine.Scene {
 
     // performs spawning
     spawnHelper() {
-
+        this.mPatrol = new Patrol(this.kMinionSprite, this.kMinionSprite);
+        this.mActivePatrols.push(this.mPatrol);
     }
 }
 
