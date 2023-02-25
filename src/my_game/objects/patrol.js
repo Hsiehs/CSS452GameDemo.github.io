@@ -13,6 +13,8 @@ class Patrol extends engine.GameObject {
         // head
         this.head = new Head(headTexture, [headX, headY]);
         // wings
+        //this.wing1 = new Wing(wingTexture, headX + 10, headY + 6, headX, headY);
+        //this.wing2 = new Wing(wingTexture, headX + 10, headY - 6, headX, headY);
     }
 
     draw(camera) {
@@ -20,14 +22,14 @@ class Patrol extends engine.GameObject {
     }
 
     update() {
-        // check if completely outside of view on right for deletion
-        this.isDead();
         // if patrol contacts viewport, reflects speed in new dir unlus right bound
         this.keepPatrolOnscreen();
         // interpolate wing positions, defined in wing class
 
         // update the elements
         this.head.update();
+        //this.wing1.update();
+        //this.wing2.update();
     }
 
     // check if outside bounds on right bound and alpha val of wing < 0
@@ -35,7 +37,7 @@ class Patrol extends engine.GameObject {
 
     }
 
-    // checks all of the bounds of the viewport except the right side
+    // checks if patrol is inside bounds of the viewport except the right side
     keepPatrolOnscreen() {
 
     }
