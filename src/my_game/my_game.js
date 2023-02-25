@@ -144,7 +144,7 @@ class MyGame extends engine.Scene {
         if (engine.input.isKeyClicked(engine.input.keys.S)) {
             //Triggers a hit event for all dyepacks
             this.mDyePackBounce.reStart();
-            for(let i = 0; this.mActiveDyePacks.length; i++){
+            for(let i = 0; i < this.mActiveDyePacks.length; i++){
                 this.mActiveDyePacks[i].setLifeSpan(300);
             }
         }
