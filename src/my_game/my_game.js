@@ -48,7 +48,7 @@ class MyGame extends engine.Scene {
             [0, 0, 800, 600]           // viewport (orgX, orgY, width, height)
         );
         this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
-                // sets the background to gray
+            // sets the background to gray
         
         this.mBg = new engine.TextureRenderable(this.kBg);
         this.mBg.getXform().setSize(200,150);
@@ -57,11 +57,7 @@ class MyGame extends engine.Scene {
         this.mHero = new Hero(this.kMinionSprite);
         this.mBrain = new Brain(this.kMinionSprite);
         this.mMinion = new Minion(this.kMinionSprite, 30, 30);
-        this.mDyePack = new DyePack(this.kMinionSprite);
-
-
-        this.mHero.getXform().setSize(9,12);
-        this.mHero.getXform().setPosition(50,40);
+        this.mDyePack = new DyePack(this.kMinionSprite, -60, 25);
         
         this.mMsg = new engine.FontRenderable("Status Message");
         this.mMsg.setColor([1, 1, 1, 1]);
@@ -89,7 +85,6 @@ class MyGame extends engine.Scene {
         
         this.mHero.draw(this.mCamera);
         this.mMinion.draw(this.mCamera);
-        this.mDyePack.draw(this.mCamera);
         this.mBrain.draw(this.mCamera);
         this.mMsg.draw(this.mCamera);   // only draw status in the main camera
         
@@ -102,6 +97,7 @@ class MyGame extends engine.Scene {
         let x, y;
 
         this.mHero.update();
+        this.mDyePack.update();
 
         //Hero inputs
         if(engine.input.isButtonPressed(engine.input.eMouseButton.eLeft)){
@@ -112,6 +108,7 @@ class MyGame extends engine.Scene {
         
         if(engine.input.isKeyClicked(engine.input.keys.Space)){
             //Spawn dyepack at hero location
+            this.mDyePack.draw(this.mCamera);
         }
 
         //implement spam protection (make sure hero resets to original position)
@@ -121,7 +118,9 @@ class MyGame extends engine.Scene {
         }
         if(!this.mBounce.done()){
             let d = this.mBounce.getNext();
-            this.mHero.getXform().incXPosBy(d);
+            this.mHero.getXform().incHeightBy(d);
+            this.mHero.getXform().incWidthBy(d);
+            
         }
 
         //DyePack inputs
