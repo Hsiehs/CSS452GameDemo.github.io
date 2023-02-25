@@ -34,7 +34,7 @@ class DyePack extends engine.GameObject {
         return (this.kSpeed < 0);
     }
 
-    //Only checks positive X axis (bad solution but works :) ).
+    //Only checks positive X axis (bad general solution but works :) ).
     isOutOfBounds(cam){
         return (this.getXform().getXPos() >= cam.getWCCenter()[0] + cam.getWCCenter()[0]); 
     }

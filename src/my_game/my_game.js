@@ -3,8 +3,6 @@
 import engine from "../engine/index.js";
 
 import Hero from "./objects/hero.js";
-import Minion from "./objects/minion.js";
-import Brain from "./objects/brain.js";
 import DyePack from "./objects/dye_pack.js";
 import Lerp from "../engine/utils/lerp.js";
 
@@ -12,17 +10,11 @@ class MyGame extends engine.Scene {
     constructor() {
         super();
 
-        // The camera to view the scene
         this.mCamera = null;
-
         this.mMsg = null;
-
         this.mActiveDyePacks = [];
-
         this.mActivePatrols = [];
-
         this.autospawn = false;
-
 
         this.kBg = "assets/bg.png";
         this.kHero = "assets/favicon.png";
@@ -30,8 +22,8 @@ class MyGame extends engine.Scene {
 
         this.mHero = null;
         this.mDyePack = null;
-
     }
+
     load() {
         engine.texture.load(this.kBg);
         engine.texture.load(this.kHero);
@@ -59,8 +51,6 @@ class MyGame extends engine.Scene {
         this.mBg.getXform().setPosition(100, 75);
 
         this.mHero = new Hero(this.kMinionSprite);
-        this.mBrain = new Brain(this.kMinionSprite);
-        this.mMinion = new Minion(this.kMinionSprite, 30, 30);
 
         this.mMsg = new engine.FontRenderable("Status Message");
         this.mMsg.setColor([1, 1, 1, 1]);
@@ -85,32 +75,29 @@ class MyGame extends engine.Scene {
 
         this.mBg.draw(this.mCamera);
         this.mHero.draw(this.mCamera);
-        this.mMinion.draw(this.mCamera);
-        this.mBrain.draw(this.mCamera);
         this.mMsg.draw(this.mCamera);   // only draw status in the main camera
         
-        // update all of the dye packs that are alive
+        // draw all of the dye packs that are alive
         for (let j = 0; j < this.mActiveDyePacks.length; j++) 
-            this.mActiveDyePacks[j].draw(this.mCamera);
-        
+            this.mActiveDyePacks[j].draw(this.mCamera);  
 
-        // update all of the patrols that are alive
+        // draw all of the patrols that are alive
         for (let k = 0; k < this.mActivePatrols.length; k++)
             this.mActivePatrols[k].draw(this.Camera);
-
 
     }
 
     // The Update function, updates the application state. Make sure to _NOT_ draw
     // anything from this function!
     update() {
-        // status update
+        // status update creation
         let msg = "Status: DyePacks(" + this.mActiveDyePacks.length + ") Patrols(" + this.mActivePatrols.length + ") AutoSpawn(" + this.autospawn + ")";
 
-        // call object updates
-        // HERO
+        // OBJECT UPDATES
+        // -------------------------------------------------------------------
+        // hero
         this.mHero.update();
-        // DYE PACKS
+        // packs
         for (let k = 0; k < this.mActiveDyePacks.length; k++) {
             if (this.mActiveDyePacks[k].hasNoLife() || this.mActiveDyePacks[k].isMotionless() || this.mActiveDyePacks[k].isOutOfBounds(this.mCamera)) {
                 this.mActiveDyePacks.splice(k, 1);
@@ -118,8 +105,14 @@ class MyGame extends engine.Scene {
                 this.mActiveDyePacks[k].update();
             }
         }
-        // PATROL GROUPS
+        // patrol
+        for (let l = 0; l < this.mActivePatrols.length; l++) {
+            // death conditions
+            // or update
+        }  
         
+        // Hero Related Methods
+        // -------------------------------------------------------------------
 
         //Hero position based on mouse if it is in the viewport
         if (this.mCamera.isMouseInViewport) {
@@ -167,13 +160,7 @@ class MyGame extends engine.Scene {
             this.mHero.getXform().setYPos(this.heroLerpY.get());
         }
 
-        if (engine.input.isKeyClicked(engine.input.keys.Space)) {
-            //Spawn dyepack at hero location
-            this.mDyePack = new DyePack(this.kMinionSprite, this.mHero.getXform().getXPos(), this.mHero.getXform().getYPos()); // x and y of heros position
-            this.mActiveDyePacks.push(this.mDyePack);
-        }
-
-        //implement spam protection (make sure hero resets to original position)
+        // extra: implement spam protection (make sure hero resets to original position)
         if (engine.input.isKeyClicked(engine.input.keys.Q)) {
             //Triggers a hero hit event
             this.mHeroBounce.reStart();
@@ -185,7 +172,15 @@ class MyGame extends engine.Scene {
             this.mHero.getXform().incWidthBy(d);
         }
 
-        //DyePack inputs
+        // DyePack Related Methods
+        // -------------------------------------------------------------------
+
+        if (engine.input.isKeyClicked(engine.input.keys.Space)) {
+            //Spawn dyepack at hero location
+            this.mDyePack = new DyePack(this.kMinionSprite, this.mHero.getXform().getXPos(), this.mHero.getXform().getYPos()); // x and y of heros position
+            this.mActiveDyePacks.push(this.mDyePack);
+        }
+
         if (engine.input.isKeyPressed(engine.input.keys.D)) {
             //Triggers a slow down
             for (let i = 0; i < this.mActiveDyePacks.length; i++) {
@@ -208,8 +203,9 @@ class MyGame extends engine.Scene {
             }
         }
 
-        //Patrol inputs
-
+        // Patrol Related Methods
+        // -------------------------------------------------------------------
+        
         if (engine.input.isKeyClicked(engine.input.keys.P)) {
             //Toggles auto spawning on/off
             if(this.autospawn){
@@ -221,6 +217,11 @@ class MyGame extends engine.Scene {
 
         if (engine.input.isKeyClicked(engine.input.keys.C)) {
             //Spawns new patrol
+            this.spawnHelper();
+        } 
+        // spawn if autospawn on
+        else if (this.autospawn) {
+            this.spawnHelper();
         }
 
         if (engine.input.isKeyClicked(engine.input.keys.J)) {
@@ -228,7 +229,14 @@ class MyGame extends engine.Scene {
             
         }
 
+        // PATROL HIT LOGIC
+
         this.mMsg.setText(msg);
+    }
+
+    // performs spawning
+    spawnHelper() {
+
     }
 }
 
