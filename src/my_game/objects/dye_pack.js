@@ -1,5 +1,6 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
+import Camera from "../../engine/cameras/camera_main.js";
 import engine from "../../engine/index.js";
 
 class DyePack extends engine.GameObject {
@@ -7,7 +8,8 @@ class DyePack extends engine.GameObject {
         super(null);
         this.kRefWidth = 80;
         this.kRefHeight = 130;
-        this.kSpeed = 2; 
+        this.kSpeed = 2;
+        this.hitFlag = false;
         this.lifespan = 300; //frames
 
         this.mRenderComponent = new engine.SpriteRenderable(spriteTexture);
@@ -17,17 +19,43 @@ class DyePack extends engine.GameObject {
         this.mRenderComponent.getXform().setRotationInDegree(90);
         this.mRenderComponent.setElementPixelPositions(510, 595, 23, 153);
         
-        this.mBounce = new engine.Oscillate(4, 20 , 300);
+        this.mBounce = new engine.Oscillate(4, 20, 300);
     }
 
     update() {
         this.lifespan--;
         this.mRenderComponent.getXform().incXPosBy(this.kSpeed);
+
     }
 
-    checkLifeSpan(){ 
-        return (this.lifespan < 0 );
+    hasNoLife(){ 
+        return (this.lifespan < 0);
     }
+    
+    isMotionless(){
+        return (this.kSpeed < 0);
+    }
+
+    //Only checks positive X axis (bad solution but works :) ).
+    isOutOfBounds(cam){
+        return (this.getXform().getXPos() >= cam.getWCCenter()[0] + cam.getWCCenter()[0]); 
+    }
+
+    slowDown(){
+        if(this.kSpeed > 0) {
+            this.kSpeed -= 0.1;
+        }
+    }
+
+    pauseForOscillation(){
+        this.kSpeed = 0.1;
+    }
+
+    setLifeSpan(time){
+        this.lifespan = time;
+    }
+
+
 }
 
 export default DyePack;

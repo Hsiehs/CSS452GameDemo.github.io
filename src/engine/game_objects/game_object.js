@@ -14,7 +14,6 @@ class GameObject {
         this.mCurrentFrontDir = vec2.fromValues(0, 1);  // this is the current front direction of the object
         this.mSpeed = 0;
     }
-
     getXform() { return this.mRenderComponent.getXform(); }
     getBBox() {
         let xform = this.getXform();
