@@ -18,11 +18,11 @@ class Oscillate {
         this.mCycles = duration; // number of cycles to complete the transition
         this.mOmega = frequency * 2 * Math.PI; // Converts frequency to radians 
 
-        this.mNumCyclesLeft = duration;
+        this.mNumCyclesLeft = 0;
     }
 
     reStart() {
-        this.mNumCyclesLeft = this.mCycles;
+        this.mNumCyclesLeft = 300;
     }
 
     done() {
