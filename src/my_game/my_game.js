@@ -66,7 +66,7 @@ class MyGame extends engine.Scene {
         this.mMsg.setTextHeight(3);
         
         // bouncing/oscellation of hero and dyepack
-        this.mHeroBounce = new engine.Oscillate(4.5, 4, 60);
+        this.mHeroBounce = new engine.Oscillate(0.5, 6, 60);
         this.mDyePackBounce = new engine.Oscillate(4, 20, 300);
 
         // hero position interpolation
@@ -111,33 +111,11 @@ class MyGame extends engine.Scene {
             }
         }
 
-        //Hero inputs simple
-        /**if (engine.input.isButtonPressed(engine.input.eMouseButton.eLeft)) {
-            x = this.mCamera.mouseWCX();
-            y = this.mCamera.mouseWCY();
-            this.mHero.getXform().setPosition(x, y);
-        }*/
-
         //Hero position based on mouse if it is in the viewport
         if (this.mCamera.isMouseInViewport) {
             // Get the world-coordinates of the mouse
             let x = this.mCamera.mouseWCX();
             let y = this.mCamera.mouseWCY();
-
-            // Check if the mouse is out of bounds on the right side
-            if (x > this.mCamera.getWCWidth() - this.mHero.collider.mWidth/2) {
-                // Set the final interpolation value to the right edge of the camera view minus half the width of the hero
-                this.heroLerpX.setFinal(this.mCamera.getWCWidth() - this.mHero.collider.mWidth/2);
-            }
-            // Check if the mouse is out of bounds on the left side
-            else if (x < this.mHero.collider.mWidth/2) {
-                // Set the final interpolation value to half the width of the hero
-                this.heroLerpX.setFinal(this.mHero.collider.mWidth/2);
-            }
-            // The mouse is within the bounds, set the final interpolation value to the x-coordinate of the mouse
-            else {
-                this.heroLerpX.setFinal(x);
-            }
 
             // Check if the mouse is out of bounds on the top side
             if (y > this.mCamera.getWCHeight() - this.mHero.collider.mHeight/2) {
@@ -152,6 +130,21 @@ class MyGame extends engine.Scene {
             // The mouse is within the bounds, set the final interpolation value to the y-coordinate of the mouse
             else {
                 this.heroLerpY.setFinal(y);
+            }
+
+            // Check if the mouse is out of bounds on the right side
+            if (x > this.mCamera.getWCWidth() - this.mHero.collider.mWidth/2) {
+                // Set the final interpolation value to the right edge of the camera view minus half the width of the hero
+                this.heroLerpX.setFinal(this.mCamera.getWCWidth() - this.mHero.collider.mWidth/2);
+            }
+            // Check if the mouse is out of bounds on the left side
+            else if (x < this.mHero.collider.mWidth/2) {
+                // Set the final interpolation value to half the width of the hero
+                this.heroLerpX.setFinal(this.mHero.collider.mWidth/2);
+            }
+            // The mouse is within the bounds, set the final interpolation value to the x-coordinate of the mouse
+            else {
+                this.heroLerpX.setFinal(x);
             }
 
             // Update the interpolation values
@@ -176,6 +169,7 @@ class MyGame extends engine.Scene {
         }
         if (!this.mHeroBounce.done()) {
             let d = this.mHeroBounce.getNext();
+            console.log(d);
             this.mHero.getXform().incHeightBy(d);
             this.mHero.getXform().incWidthBy(d);
         }
