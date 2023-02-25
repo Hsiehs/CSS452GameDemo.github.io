@@ -16,17 +16,18 @@ class MyGame extends engine.Scene {
 
         this.mMsg = null;
     
-        this.mLineSet = [];
-        this.mCurrentLine = null;
-        this.mP1 = null;
-
-        this.mShowLine = true;
+        this.mActiveDyePacks = [];
 
         this.autospawn = false;
+        
 
         this.kBg = "assets/bg.png";
         this.kHero = "assets/favicon.png"; 
         this.kMinionSprite = "assets/SpriteSheet.png"
+
+        this.mHero = null;
+        this.mDyePack = null;
+        
     }
     load() {
         engine.texture.load(this.kBg);
@@ -57,7 +58,6 @@ class MyGame extends engine.Scene {
         this.mHero = new Hero(this.kMinionSprite);
         this.mBrain = new Brain(this.kMinionSprite);
         this.mMinion = new Minion(this.kMinionSprite, 30, 30);
-        this.mDyePack = new DyePack(this.kMinionSprite, -60, 25);
         
         this.mMsg = new engine.FontRenderable("Status Message");
         this.mMsg.setColor([1, 1, 1, 1]);
@@ -77,15 +77,13 @@ class MyGame extends engine.Scene {
         let i, l;
 
         this.mBg.draw(this.mCamera);
-
-        for (i = 0; i < this.mLineSet.length; i++) {
-            l = this.mLineSet[i];
-            l.draw(this.mCamera);
-        }
         
         this.mHero.draw(this.mCamera);
         this.mMinion.draw(this.mCamera);
         this.mBrain.draw(this.mCamera);
+        for(let j = 0; j < this.mActiveDyePacks.length; j++){
+            this.mActiveDyePacks[j].draw(this.mCamera);
+        }
         this.mMsg.draw(this.mCamera);   // only draw status in the main camera
         
     }
@@ -97,18 +95,18 @@ class MyGame extends engine.Scene {
         let x, y;
 
         this.mHero.update();
-        this.mDyePack.update();
 
         //Hero inputs
         if(engine.input.isButtonPressed(engine.input.eMouseButton.eLeft)){
             x = this.mCamera.mouseWCX();
             y = this.mCamera.mouseWCY();
-            this.mHero.getXform().setPosition(x,y); 
+            this.mHero.getXform().setPosition(x,y);
         }
         
         if(engine.input.isKeyClicked(engine.input.keys.Space)){
             //Spawn dyepack at hero location
-            this.mDyePack.draw(this.mCamera);
+            this.mDyePack = new DyePack(this.kMinionSprite, this.mHero.getXform().getXPos(), this.mHero.getXform().getYPos()); // x and y of heros position
+            this.mActiveDyePacks.push(this.mDyePack);
         }
 
         //implement spam protection (make sure hero resets to original position)
@@ -147,54 +145,14 @@ class MyGame extends engine.Scene {
             //Triggers hit even for all patrols
         }
 
-        //7.6 DEFAULT CODE
+        //Call object updates.
 
-        // show line or point
-        // if  (engine.input.isKeyClicked(engine.input.keys.P)) {
-        //     this.mShowLine = !this.mShowLine;
-        //     let line = null;
-        //     if (this.mCurrentLine !== null)
-        //         line = this.mCurrentLine;
-        //     else {
-        //         if (this.mLineSet.length > 0)
-        //             line = this.mLineSet[this.mLineSet.length-1];
-        //     }
-        //     if (line !== null)
-        //         line.setShowLine(this.mShowLine);
-        // }
-    
-        // if (engine.input.isButtonPressed(engine.input.eMouseButton.eMiddle)) {
-        //     let len = this.mLineSet.length;
-        //     if (len > 0) {
-        //         this.mCurrentLine = this.mLineSet[len - 1];
-        //         x = this.mCamera.mouseWCX();
-        //         y = this.mCamera.mouseWCY();
-        //         echo += "Selected " + len + " ";
-        //         echo += "[" + x.toPrecision(2) + " " + y.toPrecision(2) + "]";
-        //         this.mCurrentLine.setFirstVertex(x, y);
-        //     }
-        // }
-    
-        // if (engine.input.isButtonPressed(engine.input.eMouseButton.eLeft)) {
-        //     x = this.mCamera.mouseWCX();
-        //     y = this.mCamera.mouseWCY();
-        //     echo += "[" + x.toPrecision(2) + " " + y.toPrecision(2) + "]";
-
-        //     if (this.mCurrentLine === null) { // start a new one
-        //         this.mCurrentLine = new engine.LineRenderable();
-        //         this.mCurrentLine.setFirstVertex(x, y);
-        //         this.mCurrentLine.setPointSize(5.0);
-        //         this.mCurrentLine.setShowLine(this.mShowLine);
-        //         this.mLineSet.push(this.mCurrentLine);
-        //     } else {
-        //         this.mCurrentLine.setSecondVertex(x, y);
-        //     }
-
-        // } else {
-        //     this.mCurrentLine = null;
-        //     this.mP1 = null;
-        // }
+        this.mHero.update();
+        for(let k = 0; k < this.mActiveDyePacks.length; k++){
+            this.mActiveDyePacks[k].update();
+        }
         
+
         this.mMsg.setText(msg);
     }
 }
