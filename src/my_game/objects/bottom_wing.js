@@ -41,6 +41,7 @@ class BottomWing extends engine.GameObject{
     draw(camera){
         this.mWingMinion.draw(camera);
     }
+    
     getColor(){
         return this.mWingMinion.getColor()[3];
     }

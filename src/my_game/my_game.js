@@ -23,6 +23,8 @@ class MyGame extends engine.Scene {
 
         this.mHero = null;
         this.mDyePack = null;
+
+        this.mAutoSpawnTimer = 0;
     }
 
     load() {
@@ -83,10 +85,10 @@ class MyGame extends engine.Scene {
             this.mActiveDyePacks[j].draw(this.mCamera);
 
         // draw all of the patrols that are alive
-        for (let k = 0; k < this.mActivePatrols.length; k++){
+        for (let k = 0; k < this.mActivePatrols.length; k++) {
             this.mActivePatrols[k].draw(this.mCamera);
         }
-            
+
 
     }
 
@@ -173,7 +175,6 @@ class MyGame extends engine.Scene {
         }
         if (!this.mHeroBounce.done()) {
             let d = this.mHeroBounce.getNext();
-            console.log(d);
             this.mHero.getXform().incHeightBy(d);
             this.mHero.getXform().incWidthBy(d);
         }
@@ -201,6 +202,7 @@ class MyGame extends engine.Scene {
                 this.mActiveDyePacks[i].setLifeSpan(300);
             }
         }
+
         if (!this.mDyePackBounce.done()) {
             let d = this.mDyePackBounce.getNext();
             for (let i = 0; i < this.mActiveDyePacks.length; i++) {
@@ -220,14 +222,18 @@ class MyGame extends engine.Scene {
                 this.autospawn = true;
             }
         }
-
         if (engine.input.isKeyClicked(engine.input.keys.C)) {
             //Spawns new patrol
             this.spawnHelper();
         }
         // spawn if autospawn on
-        else if (this.autospawn) {
+        
+        else if (this.autospawn && this.mAutoSpawnTimer < 0) {
             this.spawnHelper();
+            this.mAutoSpawnTimer = (Math.random() * (3 - 2) + 2) * 60;
+            console.log(this.mAutoSpawnTimer);
+        }else if(this.autospawn){
+            this.mAutoSpawnTimer--;
         }
 
         if (engine.input.isKeyClicked(engine.input.keys.J)) {

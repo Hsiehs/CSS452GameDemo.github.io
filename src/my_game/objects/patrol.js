@@ -49,7 +49,7 @@ class Patrol extends engine.GameObject {
 
     // checks if patrol is inside bounds of the viewport except the right side
     keepPatrolOnscreen() {
-
+        
     }
 }
 
