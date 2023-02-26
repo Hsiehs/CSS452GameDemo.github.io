@@ -45,6 +45,10 @@ class TopWing extends engine.GameObject {
     getColor(){
         return this.mWingMinion.getColor()[3];
     }
+
+    getXform(){
+        return this.mWingMinion.getXform();
+    }
 }
 
 export default TopWing;
