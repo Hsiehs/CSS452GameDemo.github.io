@@ -220,6 +220,7 @@ class MyGame extends engine.Scene {
             this.mDyePackBounce.reStart();
             for (let i = 0; i < this.mActiveDyePacks.length; i++) {
                 this.mActiveDyePacks[i].setLifeSpan(300);
+                this.mActiveDyePacks[i].pauseForOscillation();
                 this.mActiveDyePacks[i].hit();
             }
         }
@@ -280,7 +281,7 @@ class MyGame extends engine.Scene {
         if (engine.input.isKeyClicked(engine.input.keys.J)) {
             //Triggers hit even for all patrols
             for (let i = 0; i < this.mActivePatrols.length; i++) {
-                this.mActivePatrols[i].hit();
+                this.mActivePatrols[i].headHit();
             }
         }
 
