@@ -16,7 +16,7 @@ class Hero extends engine.GameObject {
     }
 
     update() {
-        this.collider =   this.getBBox();
+        this.collider = this.getBBox();
         this.mRenderComponent.getXform().setSize(9, 12);
     }
 

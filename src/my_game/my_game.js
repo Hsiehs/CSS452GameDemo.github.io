@@ -6,6 +6,7 @@ import Hero from "./objects/hero.js";
 import DyePack from "./objects/dye_pack.js";
 import Patrol from "./objects/patrol.js";
 import Lerp from "../engine/utils/lerp.js";
+import { eBoundCollideStatus } from "../engine/utils/bounding_box.js";
 
 class MyGame extends engine.Scene {
     constructor() {
@@ -25,6 +26,9 @@ class MyGame extends engine.Scene {
         this.mDyePack = null;
 
         this.mAutoSpawnTimer = 0;
+
+        this.mHeroHit = false;
+        this.mHeroHitTimer = 0;
     }
 
     load() {
@@ -61,7 +65,7 @@ class MyGame extends engine.Scene {
         this.mMsg.setTextHeight(3);
 
         // bouncing/oscellation of hero and dyepack
-        this.mHeroBounce = new engine.Oscillate(0.5, 6, 60);
+        this.mHeroBounce = new engine.Oscillate(0.5, 4, 60);
         this.mDyePackBounce = new engine.Oscillate(4, 20, 300);
 
         // hero position interpolation
@@ -179,6 +183,22 @@ class MyGame extends engine.Scene {
             this.mHero.getXform().incWidthBy(d);
         }
 
+        let heroBBox = this.mHero.getBBox();
+
+        for (let i = 0; i < this.mActivePatrols.length; i++) {
+            let pBBox = this.mActivePatrols[i].getHeadBBox();
+            if (heroBBox.intersectsBound(pBBox) && !this.mHeroHit) {
+                this.mHeroHit = true;
+                this.mHeroHitTimer = 60;
+                this.mHeroBounce.reStart();
+            }
+        }
+        if (this.mHeroHit && this.mHeroHitTimer > 0) {
+            this.mHeroHitTimer--;
+        } else if (this.mAutoSpawnTimer == 0) {
+            this.mHeroHit = false;
+        }
+
         // DyePack Related Methods
         // -------------------------------------------------------------------
 
@@ -200,17 +220,39 @@ class MyGame extends engine.Scene {
             this.mDyePackBounce.reStart();
             for (let i = 0; i < this.mActiveDyePacks.length; i++) {
                 this.mActiveDyePacks[i].setLifeSpan(300);
+                this.mActiveDyePacks[i].hit();
             }
         }
 
         if (!this.mDyePackBounce.done()) {
             let d = this.mDyePackBounce.getNext();
             for (let i = 0; i < this.mActiveDyePacks.length; i++) {
-                this.mActiveDyePacks[i].pauseForOscillation();
-                this.mActiveDyePacks[i].getXform().incXPosBy(d);
+                if (this.mActiveDyePacks[i].getHitFlag()) {
+                    this.mActiveDyePacks[i].getXform().incXPosBy(d);
+                }
             }
         }
 
+        for (let i = 0; i < this.mActiveDyePacks.length; i++) {
+            for (let j = 0; j < this.mActivePatrols.length; j++) {
+                if (this.mActiveDyePacks[i].getBBox().intersectsBound(this.mActivePatrols[j].getHeadBBox()) && !this.mActiveDyePacks[i].getHitFlag()) {
+                    this.mActivePatrols[j].headHit();
+                    this.mActiveDyePacks[i].pauseForOscillation();
+                    this.mActiveDyePacks[i].hit();
+                    this.mDyePackBounce.reStart();
+                } else if (this.mActiveDyePacks[i].getBBox().intersectsBound(this.mActivePatrols[j].getWing1BBox()) && !this.mActiveDyePacks[i].getHitFlag()) {
+                    this.mActivePatrols[j].wing1Hit();                    
+                    this.mActiveDyePacks[i].pauseForOscillation();
+                    this.mActiveDyePacks[i].hit();
+                    this.mDyePackBounce.reStart();
+                } else if (this.mActiveDyePacks[i].getBBox().intersectsBound(this.mActivePatrols[j].getWing2BBox()) && !this.mActiveDyePacks[i].getHitFlag()) {
+                    this.mActivePatrols[j].wing2Hit();
+                    this.mActiveDyePacks[i].pauseForOscillation();
+                    this.mActiveDyePacks[i].hit();
+                    this.mDyePackBounce.reStart();
+                }
+            }
+        }
         // Patrol Related Methods
         // -------------------------------------------------------------------
 
@@ -227,17 +269,17 @@ class MyGame extends engine.Scene {
             this.spawnHelper();
         }
         // spawn if autospawn on
-        
+
         else if (this.autospawn && this.mAutoSpawnTimer < 0) {
             this.spawnHelper();
             this.mAutoSpawnTimer = (Math.random() * (3 - 2) + 2) * 60;
-        }else if(this.autospawn){
+        } else if (this.autospawn) {
             this.mAutoSpawnTimer--;
         }
 
         if (engine.input.isKeyClicked(engine.input.keys.J)) {
             //Triggers hit even for all patrols
-            for(let i = 0; i < this.mActivePatrols.length; i++){
+            for (let i = 0; i < this.mActivePatrols.length; i++) {
                 this.mActivePatrols[i].hit();
             }
         }

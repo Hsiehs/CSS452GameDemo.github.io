@@ -20,7 +20,7 @@ class Patrol extends engine.GameObject {
         // wings
         this.wing1 = new TopWing(wingTexture, [headX + 10, headY + 6], this.head);
         this.wing2 = new BottomWing(wingTexture, [headX + 10, headY - 6], this.head);
-
+        this.collider = this.head.getBBox();
     }
 
     draw(camera) {
@@ -49,9 +49,13 @@ class Patrol extends engine.GameObject {
         }
     }
 
-    hit() {
+    headHit() {
         this.head.isHit();
+    }
+    wing1Hit(){
         this.wing1.isHit();
+    }
+    wing2Hit(){
         this.wing2.isHit();
     }
 
@@ -79,10 +83,24 @@ class Patrol extends engine.GameObject {
         let dot = vec2.dot(direction, normal);  // Calculate dot product
         let test = (2 * dot);
         let scaled = vec2.scale([], normal, test);
-        console.log(scaled);
-        console.log(dot);
         let reflection = vec2.sub([], scaled, direction);  // Calculate reflected vector
         return reflection;
+    }
+
+    getXform(){
+        return this.head.getXform();
+    }
+
+    getHeadBBox(){
+        return this.head.getBBox();
+    }
+
+    getWing1BBox(){
+        return this.wing1.getBBox();
+    }
+
+    getWing2BBox(){
+        return this.wing2.getBBox();
     }
 }
 

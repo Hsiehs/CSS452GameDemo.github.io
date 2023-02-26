@@ -34,6 +34,12 @@ class DyePack extends engine.GameObject {
         return (this.kSpeed < 0);
     }
 
+    hit(){
+        this.hitFlag = true;
+    }
+    getHitFlag(){
+        return this.hitFlag;
+    }
     //Only checks positive X axis (bad general solution but works :) ).
     isOutOfBounds(cam){
         return (this.getXform().getXPos() >= cam.getWCCenter()[0] + cam.getWCCenter()[0]); 
@@ -47,6 +53,7 @@ class DyePack extends engine.GameObject {
 
     pauseForOscillation(){
         this.kSpeed = 0;
+        
     }
 
     setLifeSpan(time){
