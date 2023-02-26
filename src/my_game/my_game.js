@@ -29,6 +29,8 @@ class MyGame extends engine.Scene {
 
         this.mHeroHit = false;
         this.mHeroHitTimer = 0;
+
+        this.mEnemiesKill = 0;
     }
 
     load() {
@@ -100,7 +102,7 @@ class MyGame extends engine.Scene {
     // anything from this function!
     update() {
         // status update creation
-        let msg = "Status: DyePacks(" + this.mActiveDyePacks.length + ") Patrols(" + this.mActivePatrols.length + ") AutoSpawn(" + this.autospawn + ")";
+        let msg = "Status: DyePacks(" + this.mActiveDyePacks.length + ") Patrols(" + this.mActivePatrols.length + ") AutoSpawn(" + this.autospawn + ") " + "Enemies Killed: " + this.mEnemiesKill;
 
         // OBJECT UPDATES
         // -------------------------------------------------------------------
@@ -118,6 +120,7 @@ class MyGame extends engine.Scene {
         for (let l = 0; l < this.mActivePatrols.length; l++) {
             if (this.mActivePatrols[l].isDead()) {
                 this.mActivePatrols.splice(l, 1);
+                this.mEnemiesKill++;
             } else {
                 this.mActivePatrols[l].update();
             }
@@ -242,7 +245,7 @@ class MyGame extends engine.Scene {
                     this.mActiveDyePacks[i].hit();
                     this.mDyePackBounce.reStart();
                 } else if (this.mActiveDyePacks[i].getBBox().intersectsBound(this.mActivePatrols[j].getWing1BBox()) && !this.mActiveDyePacks[i].getHitFlag()) {
-                    this.mActivePatrols[j].wing1Hit();                    
+                    this.mActivePatrols[j].wing1Hit();
                     this.mActiveDyePacks[i].pauseForOscillation();
                     this.mActiveDyePacks[i].hit();
                     this.mDyePackBounce.reStart();
