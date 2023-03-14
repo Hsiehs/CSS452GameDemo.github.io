@@ -16,6 +16,10 @@ import * as texture from "./resources/texture.js";
 import * as font from "./resources/font.js";
 import * as defaultResources from "./resources/default_resources.js";
 
+// components
+import * as physics from "./components/physics.js";
+import * as particleSystem from "./components/particle_system.js";
+
 // general utilities
 import * as input from "./input.js";
 import Scene from "./scene.js";
@@ -44,6 +48,21 @@ import { eAnimationType } from "./renderables/sprite_animate_renderable.js";
 // game objects
 import GameObject from "./game_objects/game_object.js";
 import GameObjectSet from "./game_objects/game_object_set.js";
+
+// Rigid Shapes and Collision Info
+import RigidShape from "./rigid_shapes/rigid_shape.js";
+import RigidCircle from "./rigid_shapes/rigid_circle.js";
+import RigidRectangle from "./rigid_shapes/rigid_rectangle.js";
+import CollisionInfo from "./rigid_shapes/collision_info.js";
+
+// particles
+import ExplosionEmitter from "./particles/explosion_emitter.js";
+import FireEmitter from "./particles/fire_emitter.js";
+import FireParticle from "./particles/fire_particle.js";
+import ParticleEmitter from "./particles/particle_emitter.js";
+import ParticleSet from "./particles/particle_set.js";
+import Particle from "./particles/particle.js";
+import SmokeEmitter from "./particles/smoke_emitter.js";
 
 // local to this file only
 import * as glSys from "./core/gl.js";
@@ -83,19 +102,23 @@ export default {
     audio, text, xml, texture, font, defaultResources,
 
     // input support
-    input,
-
+    input, particleSystem,
+    // particle support
+    Particle, ParticleSet, ParticleEmitter,
     // general utils 
     Lerp, LerpVec2, Oscillate, Shake, ShakeVec2,
 
     // Util classes
-    Camera, Scene, Transform, BoundingBox,  
-     
+    Camera, Scene, Transform, BoundingBox,
+
     // Renderables
     Renderable, TextureRenderable, SpriteRenderable, SpriteAnimateRenderable, FontRenderable, LineRenderable,
 
     // Game Objects
     GameObject, GameObjectSet,
+
+    // Physics and RigidShapes
+    physics, RigidShape, RigidCircle, RigidRectangle, CollisionInfo,
 
     // constants
     eTexCoordArrayIndex, eAnimationType, eBoundCollideStatus,

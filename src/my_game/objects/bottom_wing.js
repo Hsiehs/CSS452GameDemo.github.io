@@ -35,6 +35,7 @@ class BottomWing extends engine.GameObject{
     }
 
     isHit() {
+        
         this.mWingMinion.setColor([1, 1, 1, this.mWingMinion.getColor()[3] + 0.2]);
     }
 

@@ -22,6 +22,8 @@ class Head extends engine.GameObject {
         this.mRenderComponent.getXform().setPosition(position[0], position[1]);
         this.mRenderComponent.getXform().setSize(7.5, 7.5);
         this.mRenderComponent.setElementPixelPositions(120, 300, 0, 180);
+
+        
     }
 
     update() {

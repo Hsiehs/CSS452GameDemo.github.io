@@ -1,12 +1,12 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
 import engine from "../engine/index.js";
-
 import Hero from "./objects/hero.js";
 import DyePack from "./objects/dye_pack.js";
 import Patrol from "./objects/patrol.js";
 import Lerp from "../engine/utils/lerp.js";
 import { eBoundCollideStatus } from "../engine/utils/bounding_box.js";
+import ParticleSet from "../engine/particles/particle_set.js";
 
 class MyGame extends engine.Scene {
     constructor() {
@@ -17,6 +17,8 @@ class MyGame extends engine.Scene {
         this.mActiveDyePacks = [];
         this.mActivePatrols = [];
         this.autospawn = false;
+
+        this.mParticles = null;
 
         this.kBg = "assets/bg.png";
         this.kHero = "assets/favicon.png";
@@ -31,6 +33,8 @@ class MyGame extends engine.Scene {
         this.mHeroHitTimer = 0;
 
         this.mEnemiesKill = 0;
+
+        this.mSmokeTimer = 0;
     }
 
     load() {
@@ -54,6 +58,8 @@ class MyGame extends engine.Scene {
         );
         this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
         // sets the background to gray
+
+        this.mParticles = new ParticleSet();
 
         this.mBg = new engine.TextureRenderable(this.kBg);
         this.mBg.getXform().setSize(200, 150);
@@ -95,6 +101,7 @@ class MyGame extends engine.Scene {
             this.mActivePatrols[k].draw(this.mCamera);
         }
 
+        this.mParticles.draw(this.mCamera);
 
     }
 
@@ -102,6 +109,16 @@ class MyGame extends engine.Scene {
     // anything from this function!
     update() {
         // status update creation
+        this.mSmokeTimer++;
+        if(this.mSmokeTimer == 1000){
+            this.mSmokeTimer = 0;
+            for(let i = 0; i < this.mActivePatrols.length; i++){
+                this.smokeEffect = this.mParticles.createSmoke(this.mActivePatrols[i].getXform().getXPos(),this.mActivePatrols[i].getXform().getYPos() - 10, 4000);
+                this.smokeEffect.setThickness(5);
+                this.smokeEffect.setXCoverage(30);
+                this.smokeEffect.setYCoverage(30);
+            }
+        }
         let msg = "Status: DyePacks(" + this.mActiveDyePacks.length + ") Patrols(" + this.mActivePatrols.length + ") AutoSpawn(" + this.autospawn + ") " + "Enemies Killed: " + this.mEnemiesKill;
 
         // OBJECT UPDATES
@@ -228,32 +245,23 @@ class MyGame extends engine.Scene {
             }
         }
 
-        if (!this.mDyePackBounce.done()) {
-            let d = this.mDyePackBounce.getNext();
-            for (let i = 0; i < this.mActiveDyePacks.length; i++) {
-                if (this.mActiveDyePacks[i].getHitFlag()) {
-                    this.mActiveDyePacks[i].getXform().incXPosBy(d);
-                }
-            }
-        }
-
         for (let i = 0; i < this.mActiveDyePacks.length; i++) {
             for (let j = 0; j < this.mActivePatrols.length; j++) {
                 if (this.mActiveDyePacks[i].getBBox().intersectsBound(this.mActivePatrols[j].getHeadBBox()) && !this.mActiveDyePacks[i].getHitFlag()) {
                     this.mActivePatrols[j].headHit();
-                    this.mActiveDyePacks[i].pauseForOscillation();
                     this.mActiveDyePacks[i].hit();
-                    this.mDyePackBounce.reStart();
+                    this.explosionEffect = this.mParticles.createExplosion(this.mActivePatrols[j].getXform().getXPos(),this.mActivePatrols[j].getXform().getYPos());
+                    this.fireEffect = this.mParticles.createFire(this.mActivePatrols[j].getXform().getXPos(),this.mActivePatrols[j].getXform().getYPos(), 5000);
                 } else if (this.mActiveDyePacks[i].getBBox().intersectsBound(this.mActivePatrols[j].getWing1BBox()) && !this.mActiveDyePacks[i].getHitFlag()) {
                     this.mActivePatrols[j].wing1Hit();
-                    this.mActiveDyePacks[i].pauseForOscillation();
                     this.mActiveDyePacks[i].hit();
-                    this.mDyePackBounce.reStart();
+                    this.explosionEffect = this.mParticles.createExplosion(this.mActivePatrols[j].getXform().getXPos(),this.mActivePatrols[j].getXform().getYPos());
+                    this.fireEffect = this.mParticles.createFire(this.mActivePatrols[j].getXform().getXPos(),this.mActivePatrols[j].getXform().getYPos(), 5000);
                 } else if (this.mActiveDyePacks[i].getBBox().intersectsBound(this.mActivePatrols[j].getWing2BBox()) && !this.mActiveDyePacks[i].getHitFlag()) {
                     this.mActivePatrols[j].wing2Hit();
-                    this.mActiveDyePacks[i].pauseForOscillation();
                     this.mActiveDyePacks[i].hit();
-                    this.mDyePackBounce.reStart();
+                    this.explosionEffect = this.mParticles.createExplosion(this.mActivePatrols[j].getXform().getXPos(),this.mActivePatrols[j].getXform().getYPos());
+                    this.fireEffect = this.mParticles.createFire(this.mActivePatrols[j].getXform().getXPos(),this.mActivePatrols[j].getXform().getYPos(), 5000);
                 }
             }
         }
@@ -289,7 +297,7 @@ class MyGame extends engine.Scene {
         }
 
         // PATROL HIT LOGIC, BOILERPLATE OCCELATE PACK ON HIT
-
+        this.mParticles.update();
         this.mMsg.setText(msg);
     }
 

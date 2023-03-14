@@ -21,6 +21,7 @@ class Patrol extends engine.GameObject {
         this.wing1 = new TopWing(wingTexture, [headX + 10, headY + 6], this.head);
         this.wing2 = new BottomWing(wingTexture, [headX + 10, headY - 6], this.head);
         this.collider = this.head.getBBox();
+        this.hitFlag = false;
     }
 
     draw(camera) {
@@ -42,20 +43,23 @@ class Patrol extends engine.GameObject {
 
     // check if outside bounds on right bound and alpha val of wing < 0
     isDead() {
-        if (this.wing1.getColor() >= 1 || this.wing2.getColor() >= 1 || this.head.getXform().getXPos() + 3.75 > 200) {
+        if(this.hitFlag){
             return true;
-        } else {
+        }else{
             return false;
         }
     }
 
     headHit() {
+        this.hitFlag = true;
         this.head.isHit();
     }
     wing1Hit(){
+        this.hitFlag = true;
         this.wing1.isHit();
     }
     wing2Hit(){
+        this.hitFlag = true;
         this.wing2.isHit();
     }
 

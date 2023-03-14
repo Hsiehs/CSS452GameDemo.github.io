@@ -11,6 +11,7 @@ import * as input from "../input.js";
 
 const kUPS = 60; // Updates per second
 const kMPF = 1000 / kUPS; // Milliseconds per update.
+const kSPU = 1/kUPS;
 
 // Variables for timing gameloop.
 let mPrevTime;
@@ -48,6 +49,7 @@ function loopOnce() {
         }
     } 
 }
+function getUpdateIntervalInSeconds() { return kSPU; }
 
 async function start(scene) {
     if (mLoopRunning) {
@@ -82,4 +84,4 @@ function cleanUp() {
     }
 }
 
-export {start, stop, cleanUp}
+export {start, stop, cleanUp, getUpdateIntervalInSeconds}

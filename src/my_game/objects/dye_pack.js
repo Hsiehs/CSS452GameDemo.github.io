@@ -38,7 +38,11 @@ class DyePack extends engine.GameObject {
         this.hitFlag = true;
     }
     getHitFlag(){
-        return this.hitFlag;
+        return this.hitFlag; 
+    }
+
+    kill(){
+        this.lifespan = -1;
     }
 
     //Only checks positive X axis (bad general solution but works :) ).

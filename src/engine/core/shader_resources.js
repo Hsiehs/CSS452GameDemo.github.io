@@ -28,11 +28,15 @@ let mSpriteShader = null;
 let kLineFS = "src/glsl_shaders/line_fs.glsl";        // Path to the Line FragmentShader
 let mLineShader = null;
 
+let kParticleFS = "src/glsl_shaders/particle_fs.glsl";
+let mParticleShader = null;
+
 function createShaders() {
     mConstColorShader = new SimpleShader(kSimpleVS, kSimpleFS);
     mTextureShader = new TextureShader(kTextureVS, kTextureFS);
     mSpriteShader = new SpriteShader(kTextureVS, kTextureFS);
     mLineShader =  new LineShader(kSimpleVS, kLineFS);
+    mParticleShader = new TextureShader(kTextureVS, kParticleFS);
 }
 
 function cleanUp() {
@@ -56,7 +60,8 @@ function init() {
                 text.load(kSimpleVS),
                 text.load(kTextureFS),
                 text.load(kTextureVS),
-                text.load(kLineFS)
+                text.load(kLineFS),
+                text.load(kParticleFS)
             ]);
             resolve();
         }).then(
@@ -69,6 +74,13 @@ function getConstColorShader() { return mConstColorShader; }
 function getTextureShader() { return mTextureShader; }
 function getSpriteShader() { return mSpriteShader; }
 function getLineShader() { return mLineShader; }
+function getLightShader() { return mLightShader; }
+function getIllumShader() { return mIllumShader; }
+function getShadowReceiverShader() { return mShadowReceiverShader; }
+function getShadowCasterShader() { return mShadowCasterShader; }
+function getParticleShader() { return mParticleShader }
 
 export {init, cleanUp, 
-        getConstColorShader, getTextureShader, getSpriteShader, getLineShader}
+    getConstColorShader, getTextureShader, getSpriteShader, getLineShader,
+    getLightShader, getIllumShader, getShadowReceiverShader, getShadowCasterShader,
+    getParticleShader}
